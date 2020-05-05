@@ -35,7 +35,7 @@ int main()
     // open the BiblioDSN data source with the Connection object
 
     /*sConString = L"Provider=.NET Framework Data Provider for SQL Server; Data Source=DESKTOP-NUKCG05;Initial Catalog=AdventureWorks2017;Integrated Security=True";*/
-    sConString = L"Data Source=DESKTOP-NUKCG05;Initial Catalog=AdventureWorks2017;Integrated Security=True";
+    sConString = L"Data Source=DESKTOP-NUKCG05;Initial Catalog=AdventureWorks2017;Integrated Security=True"; 
     con->Open(sConString, L"", L"", -1);
     printf("Connection opened.\n");
     // create a Recordset object from a SQL string
