@@ -3,8 +3,9 @@
 #include "stdafx.h"
 #include <iostream>
 #include "windows.h"
-#import "C:\Program Files\Common Files\System\ado\msado60_Backcompat.tlb" no_namespace rename("EOF", "EOFile")
+//#import "C:\Program Files\Common Files\System\ado\msado60_Backcompat.tlb" no_namespace rename("EOF", "EOFile")
 
+#import "C:\Program Files\Common Files\System\ado\msado15.dll" no_namespace rename("EOF", "EOFile")
 int main()
 {
     // define our variables which will be used as references to the
@@ -23,6 +24,7 @@ int main()
     HRESULT hr = S_OK;
     // long variable needed for Execute method of Connection object
     VARIANT* vRecordsAffected = NULL;
+    long _options = 1;
 
 
     if (FAILED(hr = CoInitialize(NULL)))
@@ -44,11 +46,17 @@ int main()
         con->Open(sConString, "", "", adConnectUnspecified);
         printf("Connection opened.\n");
         // create a Recordset object from a SQL string
-        sSQLString = L"select Name from Production.Location;";
-        rec = con->Execute(sSQLString, vRecordsAffected, 1);
+        sSQLString = L"select top 1 [Schema] from DatabaseLog";
+        //sSQLString = L"select 1 [Name] from Production.Location";
+        hr = rec.CreateInstance(__uuidof(Recordset));
+        rec->PutRefActiveConnection(con);
+        rec = con->Execute(sSQLString, vRecordsAffected, _options);
+        //rec->Open("Location", vtMissing, adOpenStatic, adLockOptimistic, adCmdTable);
+        //rec->Execute(sSQLString);
         printf("SQL statement processed.\n");
         // point to the Author field in the recordset
-        pAuthor = rec->Fields->GetItem("Name");
+        pAuthor = rec->Fields->GetItem("[Schema]");
+        //pAuthor = rec->Fields->GetItem("Hello");
         // retrieve all the data within the Recordset object
         printf("Getting data now...\n\n");
         while (!rec->EOFile)
@@ -80,6 +88,7 @@ int main()
         con = NULL;
         printf("Closed and removed the "
             "Connection object from memory.\n");
+        CoUninitialize();
     }
     catch (std::exception e)
     {

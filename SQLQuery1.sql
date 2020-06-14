@@ -1,0 +1,1 @@
+﻿select Name from Production.Location
